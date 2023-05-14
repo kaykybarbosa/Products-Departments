@@ -17,4 +17,9 @@ public class ProductModel {
     @Column(nullable = false)
     private double price;
 
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    @Column(nullable = false)
+    private DepartmentModel department;
+
 }
