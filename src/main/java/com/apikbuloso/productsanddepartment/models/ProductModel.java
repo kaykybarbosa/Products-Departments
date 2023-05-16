@@ -1,7 +1,10 @@
 package com.apikbuloso.productsanddepartment.models;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.Fetch;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 @Entity
@@ -17,9 +20,7 @@ public class ProductModel {
     @Column(nullable = false)
     private double price;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "department_id")
-    @Column(nullable = false)
     private DepartmentModel department;
-
 }
