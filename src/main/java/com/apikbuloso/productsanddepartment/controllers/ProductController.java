@@ -6,9 +6,11 @@ import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.services.DepartmentService;
 import com.apikbuloso.productsanddepartment.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +26,14 @@ public class ProductController {
     DepartmentService departmentService;
 
     @GetMapping("/products")
-    public List<ProductModel> getAllProducts(){
-       return productService.findAll();
+    public ResponseEntity<Page<ProductModel>> getAllProducts(Pageable pageable){
+       return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
     }
 
     @GetMapping("/departments")
-    public List<DepartmentModel> getAllDepartment(){ return departmentService.findAll(); }
+    public ResponseEntity<Page<DepartmentModel>> getAllDepartment(Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(departmentService.findAll(pageable));
+    }
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id") Long id){
@@ -39,13 +43,12 @@ public class ProductController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
     }
-    @GetMapping("/department/{id}")
+    @GetMapping("/departments/{id}")
     public ResponseEntity<Object> getOneDepartment(@PathVariable(value = "id") Long id){
         Optional<DepartmentModel> departmentModelOptional = departmentService.findById(id);
         if (departmentModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Department with this ID not found.");
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(departmentModelOptional.get());
     }
 
