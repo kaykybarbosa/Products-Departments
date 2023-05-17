@@ -5,6 +5,7 @@ import com.apikbuloso.productsanddepartment.models.DepartmentModel;
 import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.repository.DepartmentRepository;
 import com.apikbuloso.productsanddepartment.repository.ProductRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,15 @@ public class ProductController {
         public ResponseEntity<Object> saveDepartment(@RequestBody DepartmentModel departmentModel){
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentRepository.save(departmentModel));
     }
+    @DeleteMapping("/delete-produc/{id}")
+    public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") Long id){
+        Optional<ProductModel> productModelOptional = productRepository.findById(id);
+        if(productModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        }
 
+        productRepository.delete(productModelOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfullly.");
+    }
 
 }
