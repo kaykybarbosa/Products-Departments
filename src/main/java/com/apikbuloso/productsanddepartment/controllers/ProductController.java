@@ -94,4 +94,6 @@ public class ProductController {
         departmentService.delete(departmentModelOptional.get());
     return ResponseEntity.status(HttpStatus.OK).body(" Department deleted successfully.");
     }
+
+
 }
