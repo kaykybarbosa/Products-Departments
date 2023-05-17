@@ -10,5 +10,5 @@ public class ProductDto implements Serializable {
     private Long id;
     private String name;
     private double price;
-    private DepartmentModel departmentDto;
+    private DepartmentModel department;
 }

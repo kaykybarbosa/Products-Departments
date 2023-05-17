@@ -16,6 +16,6 @@ public class DepartmentModel  {
     private Long id;
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany()
     private List<ProductModel> products;
 }

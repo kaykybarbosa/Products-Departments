@@ -1,10 +1,7 @@
 package com.apikbuloso.productsanddepartment.models;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.Fetch;
 import lombok.Data;
-
-import java.io.Serializable;
 
 @Data
 @Entity
