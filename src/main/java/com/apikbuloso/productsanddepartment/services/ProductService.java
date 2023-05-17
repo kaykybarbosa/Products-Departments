@@ -4,6 +4,9 @@ import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,8 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
-    public List<ProductModel> findAll() {
-        return productRepository.findAll();
+    public Page<ProductModel> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     @Transactional

@@ -4,6 +4,8 @@ import com.apikbuloso.productsanddepartment.models.DepartmentModel;
 import com.apikbuloso.productsanddepartment.repository.DepartmentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +15,8 @@ import java.util.Optional;
 public class DepartmentService {
     @Autowired
     DepartmentRepository departmentRepository;
-    public List<DepartmentModel> findAll() {
-        return departmentRepository.findAll();
+    public Page<DepartmentModel> findAll(Pageable pageable) {
+        return departmentRepository.findAll(pageable);
     }
 
     public Optional<DepartmentModel> findById(Long id) {
