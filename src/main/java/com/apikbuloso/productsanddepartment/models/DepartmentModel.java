@@ -3,8 +3,6 @@ package com.apikbuloso.productsanddepartment.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Entity
 @Table(name="TB_DEPARTMENT")
@@ -16,6 +14,4 @@ public class DepartmentModel  {
     private Long id;
     private String name;
 
-    @OneToMany()
-    private List<ProductModel> products;
 }

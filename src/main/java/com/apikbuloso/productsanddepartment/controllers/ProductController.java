@@ -8,7 +8,6 @@ import com.apikbuloso.productsanddepartment.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class ProductController {
     @Autowired
     ProductService productService;
-
     @Autowired
     DepartmentService departmentService;
 
@@ -50,6 +48,10 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Department with this ID not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(departmentModelOptional.get());
+    }
+    @GetMapping("/products-depart/{id}")
+    public List<ProductModel> getProductByDepartId(@PathVariable(value = "id") Long id){
+        return productService.findProductByDepartId(id);
     }
 
     @PostMapping("/create-product")
@@ -94,6 +96,4 @@ public class ProductController {
         departmentService.delete(departmentModelOptional.get());
     return ResponseEntity.status(HttpStatus.OK).body(" Department deleted successfully.");
     }
-
-
 }
