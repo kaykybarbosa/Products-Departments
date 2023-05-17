@@ -5,12 +5,9 @@ import com.apikbuloso.productsanddepartment.models.DepartmentModel;
 import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.repository.DepartmentRepository;
 import com.apikbuloso.productsanddepartment.repository.ProductRepository;
-import org.apache.coyote.Response;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,8 +30,6 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Object> saveProduct(@RequestBody ProductDto productDto){
         var productModel = new ProductModel();
-        productModel.setName(productDto.getName());
-        productModel.setPrice(productDto.getPrice());
 
         Optional<DepartmentModel> departmentModelOptional = departmentRepository.findById(productDto.getDepartment().getId());
         if (departmentModelOptional.isEmpty()){
@@ -45,6 +40,8 @@ public class ProductController {
             productModel.setDepartment(departmentModelOptional.get());
         }
 
+        productModel.setName(productDto.getName());
+        productModel.setPrice(productDto.getPrice());
         return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));
     }
 
@@ -56,11 +53,22 @@ public class ProductController {
     public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") Long id){
         Optional<ProductModel> productModelOptional = productRepository.findById(id);
         if(productModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Product not found.");
         }
 
         productRepository.delete(productModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfullly.");
+        return ResponseEntity.status(HttpStatus.OK).body(" Product deleted successfullly.");
     }
+    @DeleteMapping("/delete-depart/{id}")
+    public ResponseEntity<Object> deleteDepartById(@PathVariable(value = "id") Long id){
+        Optional<DepartmentModel> departmentModelOptional = departmentRepository.findById(id);
+        if (departmentModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Department not found.");
+        }
+
+        departmentRepository.delete(departmentModelOptional.get());
+    return ResponseEntity.status(HttpStatus.OK).body(" Department deleted successfully.");
+    }
+
 
 }
