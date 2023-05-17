@@ -32,14 +32,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Object> saveProduct(@RequestBody ProductDto productDto){
         var productModel = new ProductModel();
-        //BeanUtils.copyProperties(productDto, productModel);
-
         productModel.setName(productDto.getName());
         productModel.setPrice(productDto.getPrice());
 
-        Optional<DepartmentModel> departmentModelOptional = departmentRepository.findByName(productDto.getDepartmentDto().getName());
+        Optional<DepartmentModel> departmentModelOptional = departmentRepository.findById(productDto.getDepartment().getId());
         if (departmentModelOptional.isEmpty()){
-            var departmentModel = departmentRepository.save(productDto.getDepartmentDto());
+            var departmentModel = departmentRepository.save(productDto.getDepartment());
             productModel.setDepartment(departmentModel);
         } else {
 
@@ -49,8 +47,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));
     }
 
-    @PostMapping("/department")
-    public ResponseEntity<Object> saveDepartment(@RequestBody DepartmentModel departmentModel){
+    @PostMapping("/create-depart")
+        public ResponseEntity<Object> saveDepartment(@RequestBody DepartmentModel departmentModel){
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentRepository.save(departmentModel));
     }
+
+
 }
