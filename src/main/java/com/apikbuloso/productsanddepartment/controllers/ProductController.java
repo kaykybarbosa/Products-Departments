@@ -8,6 +8,7 @@ import com.apikbuloso.productsanddepartment.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +27,27 @@ public class ProductController {
     public List<ProductModel> getAllProducts(){
        return productService.findAll();
     }
+
     @GetMapping("/departments")
     public List<DepartmentModel> getAllDepartment(){ return departmentService.findAll(); }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id") Long id){
+        Optional<ProductModel> productModelOptional = productService.findById(id);
+        if (productModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Product with this ID not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
+    }
+    @GetMapping("/department/{id}")
+    public ResponseEntity<Object> getOneDepartment(@PathVariable(value = "id") Long id){
+        Optional<DepartmentModel> departmentModelOptional = departmentService.findById(id);
+        if (departmentModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Department with this ID not found.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(departmentModelOptional.get());
+    }
 
     @PostMapping("/create-product")
     public ResponseEntity<Object> saveProduct(@RequestBody ProductDto productDto){
