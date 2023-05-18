@@ -5,6 +5,7 @@ import com.apikbuloso.productsanddepartment.models.DepartmentModel;
 import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.services.DepartmentService;
 import com.apikbuloso.productsanddepartment.services.ProductService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,8 +62,7 @@ public class ProductController {
         if (departmentModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Department with this ID not found.");
         }
-        productModel.setName(productDto.getName());
-        productModel.setPrice(productDto.getPrice());
+        BeanUtils.copyProperties(productDto, productModel);
         productModel.setDepartment(departmentModelOptional.get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productModel));
@@ -75,6 +75,21 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(" Department already registered.");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.save(departmentModel));
+    }
+
+    @PutMapping("/update-product/{id}")
+    public ResponseEntity<Object> updateProduct(@PathVariable( value = "id") Long id,
+                                                @RequestBody ProductDto productDto){
+        Optional<ProductModel> productModelOptional = productService.findById(id);
+        if (productModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Product with this ID not found.");
+        }
+
+        var productModel = new ProductModel();
+        BeanUtils.copyProperties(productDto, productModel);
+        productModel.setId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(productService.save(productModel));
     }
     @DeleteMapping("/delete-product/{id}")
     public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") Long id){
