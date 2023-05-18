@@ -1,10 +1,10 @@
 package com.apikbuloso.productsanddepartment.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
-public class DepartmentDto implements Serializable {
+public class DepartmentDto {
+    @NotBlank
     private String name;
 }

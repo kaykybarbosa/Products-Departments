@@ -1,10 +1,12 @@
 package com.apikbuloso.productsanddepartment.controllers;
 
+import com.apikbuloso.productsanddepartment.dtos.DepartmentDto;
 import com.apikbuloso.productsanddepartment.dtos.ProductDto;
 import com.apikbuloso.productsanddepartment.models.DepartmentModel;
 import com.apikbuloso.productsanddepartment.models.ProductModel;
 import com.apikbuloso.productsanddepartment.services.DepartmentService;
 import com.apikbuloso.productsanddepartment.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,12 +30,10 @@ public class ProductController {
     public ResponseEntity<Page<ProductModel>> getAllProducts(Pageable pageable){
        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
     }
-
     @GetMapping("/departments")
     public ResponseEntity<Page<DepartmentModel>> getAllDepartment(Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(departmentService.findAll(pageable));
     }
-
     @GetMapping("/products/{id}")
     public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id") Long id){
         Optional<ProductModel> productModelOptional = productService.findById(id);
@@ -54,9 +54,8 @@ public class ProductController {
     public List<ProductModel> getProductByDepartId(@PathVariable(value = "id") Long id){
         return productService.findProductByDepartId(id);
     }
-
     @PostMapping("/create-product")
-    public ResponseEntity<Object> saveProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<Object> saveProduct(@RequestBody @Valid ProductDto productDto){
         var productModel = new ProductModel();
         Optional<DepartmentModel> departmentModelOptional = departmentService.findById(productDto.getDepartment().getId());
         if (departmentModelOptional.isEmpty()){
@@ -67,19 +66,20 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productModel));
     }
-
     @PostMapping("/create-depart")
-    public ResponseEntity<Object> saveDepartment(@RequestBody DepartmentModel departmentModel){
-        Optional<DepartmentModel> departmentModelOptional = departmentService.findByName(departmentModel.getName());
+    public ResponseEntity<Object> saveDepartment(@RequestBody @Valid DepartmentDto departmentDto){
+        Optional<DepartmentModel> departmentModelOptional = departmentService.findByName(departmentDto.getName());
         if (departmentModelOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(" Department already registered.");
         }
+        var departmentModel = new DepartmentModel();
+        departmentModel.setName(departmentDto.getName());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.save(departmentModel));
     }
-
     @PutMapping("/update-product/{id}")
     public ResponseEntity<Object> updateProduct(@PathVariable( value = "id") Long id,
-                                                @RequestBody ProductDto productDto){
+                                                @RequestBody @Valid ProductDto productDto){
         Optional<ProductModel> productModelOptional = productService.findById(id);
         if (productModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Product with this ID not found.");
@@ -109,6 +109,6 @@ public class ProductController {
         }
 
         departmentService.delete(departmentModelOptional.get());
-    return ResponseEntity.status(HttpStatus.OK).body(" Department deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body(" Department deleted successfully.");
     }
 }
